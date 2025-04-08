@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>French Grammar Quiz</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Tailwind configuration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6", // blue-500
+              secondary: "#10B981", // emerald-500
+              accent: "#6366F1", // indigo-500
+              neutral: "#1F2937", // gray-800
+              "neutral-light": "#F3F4F6", // gray-100
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            backgroundImage: {
+              "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Custom styles that can't be handled by Tailwind utility classes -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .text-shadow {
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .bg-hero {
+          background-color: #f9fafb;
+          background-image: radial-gradient(
+              circle at top right,
+              rgba(59, 130, 246, 0.1),
+              transparent 400px
+            ),
+            radial-gradient(
+              circle at bottom left,
+              rgba(99, 102, 241, 0.1),
+              transparent 400px
+            );
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        /* AI Tutor Dialog Styles */
+        .dialog-active {
+          opacity: 1;
+        }
+        
+        .dialog-content-active {
+          transform: translateY(0);
+        }
+        
+        .delay-75 {
+          animation-delay: 0.15s;
+        }
+        
+        .delay-150 {
+          animation-delay: 0.3s;
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+        
+        .animate-pulse {
+          animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      }
+    </style>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-hero min-h-screen font-sans text-neutral flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+      <div
+        class="container mx-auto px-6 py-5 flex justify-between items-center"
+      >
+        <h1
+          class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
+        >
+          French Grammar Quiz
+        </h1>
+        <nav class="flex items-center space-x-3">
+          <button
+            id="home-nav-btn"
+            class="p-2 rounded-md hover:bg-blue-50 transition-colors text-sm flex items-center text-primary"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline-block mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
+              />
+            </svg>
+            <span class="hidden md:inline">Home</span>
+          </button>
+          <button
+            id="back-btn"
+            class="p-2 rounded-md hover:bg-blue-50 transition-colors text-sm hidden text-primary"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-md hover:bg-blue-50 transition-colors text-primary"
+            aria-label="Toggle theme"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- Quiz category selection view -->
+      <section id="category-selection" class="mb-12 max-w-7xl mx-auto">
+        <h2
+          class="text-2xl md:text-3xl font-bold mb-3 text-neutral text-center"
+        >
+          Select a Quiz Category
+        </h2>
+        <p class="text-center text-gray-600 max-w-2xl mx-auto mb-10">
+          Boost your French grammar skills with these targeted quizzes. Each
+          category focuses on specific skills to help you become more confident
+          in French.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+          <!-- Quiz category cards will be generated here by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Quiz container (initially hidden) -->
+      <section id="quiz-container" class="hidden">
+        <div
+          class="bg-white rounded-lg shadow-md p-4 sm:p-6 max-w-3xl mx-auto relative"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4"
+          >
+            <h2 id="quiz-title" class="text-xl font-semibold mb-2 sm:mb-0"></h2>
+            <div id="quiz-progress" class="text-sm text-gray-600"></div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+            <div
+              id="progress-bar"
+              class="bg-primary h-2.5 rounded-full transition-all duration-300"
+              style="width: 0%"
+            ></div>
+          </div>
+
+          <div id="question-container" class="mb-6">
+            <!-- Dynamic question content will be inserted here -->
+          </div>
+
+          <div id="options-container" class="mb-6">
+            <!-- Dynamic answer options will be inserted here -->
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-center"
+          >
+            <button
+              id="prev-btn"
+              class="order-2 sm:order-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 active:bg-gray-400 transition-colors w-full sm:w-auto"
+              title="Previous question (←)"
+            >
+              Previous
+            </button>
+            <div
+              class="text-xs text-gray-500 order-1 sm:order-2 text-center mb-2 sm:mb-0 hidden sm:block"
+            >
+              <span title="Previous question">←</span>
+              <span title="Next question">→</span> or
+              <span title="Next question">Enter</span>
+            </div>
+            <button
+              id="next-btn"
+              class="order-3 px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 active:bg-blue-700 transition-colors w-full sm:w-auto"
+              title="Next question (→ or Enter)"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quiz results container (initially hidden) -->
+      <section id="results-container" class="hidden">
+        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 max-w-3xl mx-auto">
+          <h2 class="text-xl font-semibold mb-4">Quiz Results</h2>
+          <div id="score-display" class="text-center mb-6">
+            <!-- Score will be displayed here -->
+          </div>
+          <div id="result-details" class="mb-6">
+            <!-- Detailed results will be inserted here -->
+          </div>
+          <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <button
+              id="retry-btn"
+              class="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 active:bg-blue-700 transition-colors w-full sm:w-auto"
+            >
+              Retry Quiz
+            </button>
+            <button
+              id="home-btn"
+              class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 active:bg-gray-400 transition-colors w-full sm:w-auto"
+            >
+              Return to Home
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-inner mt-auto">
+      <div class="container mx-auto px-6 py-8 text-center">
+        <div
+          class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8"
+        >
+          <p class="text-gray-500">French Grammar Quiz © 2025</p>
+          <div class="flex space-x-6">
+            <a
+              href="#"
+              class="text-gray-400 hover:text-primary transition-colors"
+              >About</a
+            >
+            <a
+              href="#"
+              class="text-gray-400 hover:text-primary transition-colors"
+              >Privacy</a
+            >
+            <a
+              href="#"
+              class="text-gray-400 hover:text-primary transition-colors"
+              >Contact</a
+            >
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Google Generative AI Library -->
+    <script src="https://unpkg.com/@google/generative-ai@0.2.0/dist/gen.js"></script>
+    <script>
+      // Make GoogleGenerativeAI available globally
+      if (typeof window.GoogleGenerativeAI === 'undefined' && typeof window.googleGenerativeAI !== 'undefined') {
+        window.GoogleGenerativeAI = window.googleGenerativeAI.GoogleGenerativeAI;
+        window.HarmCategory = window.googleGenerativeAI.HarmCategory;
+        window.HarmBlockThreshold = window.googleGenerativeAI.HarmBlockThreshold;
+        console.log('Google Generative AI library loaded and made available globally');
+      }
+    </script>
+    
+    <!-- JavaScript -->
+    <script src="js/data.js"></script>
+    <script src="js/quizManager.js"></script>
+    <script src="js/quizRenderer.js"></script>
+    <script src="js/aiQuizGenerator.js"></script>
+    <script src="js/aiTutorDialog.js"></script>
+    <script src="js/aiQuizUI.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/debug.js"></script>
+  </body>
+</html>
